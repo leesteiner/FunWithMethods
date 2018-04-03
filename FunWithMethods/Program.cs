@@ -33,6 +33,54 @@ namespace FunWithMethods
             Console.WriteLine($"After: {str1}, {str2}");
 
             Console.ReadLine();
+
+            #region Ref locals and params
+            string[] stringArray = { "one", "two", "three" };
+            int pos = 1;
+            Console.WriteLine("=> Use Simple Return");
+            Console.WriteLine("Before: {0}, {1}, {2}", stringArray[0], stringArray[1], stringArray[2]);
+
+            var output = SimpleReturn(stringArray, pos);
+            output = "new";
+            Console.WriteLine("After: {0}, {1}, {2}", stringArray[0], stringArray[1], stringArray[2]);
+
+            Console.WriteLine("=> Use Ref Return");
+            Console.WriteLine("Before: {0}, {1}. {2}", stringArray[0], stringArray[1], stringArray[2]);
+            ref var refOutput = ref SampleRefReturn(stringArray, pos);
+            refOutput = "new";
+            Console.WriteLine("After: {0}, {1}, {2} ", stringArray[0], stringArray[1], stringArray[2]);
+            #endregion
+
+            Console.WriteLine("Params test");
+            //Pass in a comma-delimited list
+            double average;
+            average = CalculateAverage(4.0, 3.2, 5.7, 64.22, 87.2);
+            Console.WriteLine("Average of data is: {0}", average);
+
+            //Pass in an array of doubles
+            double[] data = { 4.0, 3.2, 5.7 };
+            average = CalculateAverage(data);
+            Console.WriteLine("Average of data is {0}", average);
+
+            //Average of 0 is 0!
+            Console.WriteLine("average of data is: {0}", CalculateAverage());
+            Console.ReadLine();
+
+            Console.WriteLine("*****Error Ownership*****");
+            EnterLogData("Oh no! Grid can't find data!");
+            EnterLogData("Oh no! I can't find the payroll data", "CFO");
+            Console.ReadLine();
+
+            Console.WriteLine("*****Passing by Names Parameters*****");
+            DisplayFancyMessage(message: "Wow! Very Fancy Indeed!", backgroundColor: ConsoleColor.White, textColor: ConsoleColor.DarkRed);
+            DisplayFancyMessage(backgroundColor: ConsoleColor.Magenta, message: "Testing.... testing....", textColor: ConsoleColor.DarkYellow);
+
+            Console.WriteLine("Testing mix of named arguments and positional arguments");
+            DisplayFancyMessage(ConsoleColor.Cyan, message: "More testing", backgroundColor: ConsoleColor.Black);
+
+            Console.WriteLine("Fancy message with mix of default value and named args");
+            DisplayFancierMessage(message: "Test this!");
+            DisplayFancierMessage(backgroundColor: ConsoleColor.Red);
         }
 
         static int Add(int x, int y)
@@ -62,6 +110,72 @@ namespace FunWithMethods
             string tempStr = s1;
             s1 = s2;
             s2 = tempStr;
+        }
+
+        public static string SimpleReturn(string[] strArray, int position)
+        {
+            return strArray[position];
+        }
+
+        public static ref string SampleRefReturn(string[] strArray, int position)
+        {
+            return ref strArray[position];
+        }
+
+        static double CalculateAverage(params double[] values)
+        {
+            Console.WriteLine("You sent me {0} doubles", values.Length);
+
+            double sum = 0;
+            if(values.Length == 0)
+            {
+                return sum;
+            }
+            for (int i = 0; i <values.Length;i++)
+            {
+                sum += values[i];
+            }
+            return (sum / values.Length);
+        }
+
+        static void EnterLogData(string message, string owner = "Lee")
+        {
+            Console.Beep();
+            Console.WriteLine("Error: {0}", message);
+            Console.WriteLine("Owner of Error: {0}", owner);
+        }
+
+        static void DisplayFancyMessage(ConsoleColor textColor, ConsoleColor backgroundColor, string message)
+        {
+            //Store old color to restore after message is printed.
+            ConsoleColor oldTextColor = Console.ForegroundColor;
+            ConsoleColor oldBackgroundColor = Console.BackgroundColor;
+
+            //Set new colors and print message
+            Console.ForegroundColor = textColor;
+            Console.BackgroundColor = backgroundColor;
+            Console.WriteLine(message);
+
+            //Restore Previous colors
+            Console.ForegroundColor = oldTextColor;
+            Console.BackgroundColor = oldBackgroundColor;
+        }
+
+        static void DisplayFancierMessage(ConsoleColor textColor = ConsoleColor.Blue, ConsoleColor backgroundColor = ConsoleColor.DarkBlue, string message = "Fancy testing....")
+        {
+            //Store old color to restore after message is printed.
+            ConsoleColor oldTextColor = Console.ForegroundColor;
+            ConsoleColor oldBackgroundColor = Console.BackgroundColor;
+
+            //Set new colors and print message
+            Console.ForegroundColor = textColor;
+            Console.BackgroundColor = backgroundColor;
+            Console.WriteLine(message);
+
+            //Restore Previous colors
+            Console.ForegroundColor = oldTextColor;
+            Console.BackgroundColor = oldBackgroundColor;
+
         }
     }
 }
